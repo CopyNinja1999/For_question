@@ -37,6 +37,10 @@ G = createGraph("out.txt")
 print(G.edges)
 
 
+
+d_gen = nx.dfs_edges(G,0)  #  按边深度搜索, 1为起点
+b_gen = nx.bfs_edges(G,0)
+print(list(d_gen), list(b_gen))
 import matplotlib.pyplot as plt
 
 pos = nx.spring_layout(G)
@@ -44,4 +48,4 @@ nx.draw_networkx_nodes(G, pos)
 nx.draw_networkx_edges(G, pos)
 nx.draw_networkx_labels(G, pos)
 plt.show()
-
+#print(nx.dfs_tree(G,1).nodes())  # 按点深搜

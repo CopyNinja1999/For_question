@@ -51,38 +51,6 @@ vector<vector<int> > adj;//record the neighbours
 //		puts("");
 //	}
 //}
-
-void Print_data() {
-	int n = adj.size();
-	for (int i = 0; i < n; i++) {
-		int m = adj[i].size();
-		cout << i << ": ";
-		for (int j = 0; j < m; j++) { cout << adj[i][j] << " ,"; }
-		cout << endl;
-
-	}
-
-}
-size_t random(int r, int b) {
-	size_t random;
-	random=(rand() % (b-r+1)) +r;//represents [r,b]
-//	cout << random << endl;
-	return random;
-}
-bool isExplored() {
-	size_t n = adj.size();
-	bool eFlag =true;
-	for (size_t i = 0; i < n; i++)
-	{
-		if (!v[i].visited) {
-			eFlag = false;
-			cout << "Traversal incomplete"<<endl;
-			break;
-		}
-	}
-	
-	return eFlag;
-}
 bool equal(vector<int> &temp,size_t x) {
 	size_t n = temp.size();
 	bool equal = false;
@@ -105,6 +73,66 @@ bool equal(vector<int> &temp,size_t x) {
 		return equal;
 	}
 }
+size_t Num_of_edges(vector<vector<int>> &adj) {
+	size_t m=0;
+	size_t n = adj.size();
+	//in the adjacancy list, the number of edges is the sum of the edges that each vertice owns
+	for (size_t i = 0; i < n;i++) {
+		m += adj[i].size();
+	}
+
+
+	return m;
+}
+void Print_adj_list() {
+	int n = adj.size();
+	for (int i = 0; i < n; i++) {
+		int m = adj[i].size();
+		cout << i << ": ";
+		for (int j = 0; j < m; j++) { cout << adj[i][j] << " ,"; }
+		cout << endl;
+
+	}
+
+}
+void Print_adj_matrix() {
+	int n = adj.size();
+	for (int i = 0; i < n;i++) {//outer loop, print i rows
+		for (int j = 0; j < n; j++) {//inner loop, print dots
+			if (equal(adj[i], j)) //which means it has the element j
+			{
+				cout << "1" << " ";
+			}
+			else
+				cout << "0" << " ";
+		}
+		cout << endl;
+	
+	}
+}
+size_t random(int r, int b) {
+	size_t random;
+	random=(rand() % (b-r+1)) +r;//represents [r,b]
+
+//	cout << random << endl;
+	return random;
+}
+bool isExplored() {
+	size_t n = adj.size();
+	bool eFlag =true;
+	for (size_t i = 0; i < n; i++)
+	{
+		if (!v[i].visited) {
+			eFlag = false;
+			cout << "Traversal incomplete"<<endl;
+			break;
+		}
+	}
+	
+	return eFlag;
+}
+//check if the vector temp has the same element as x
+
 void generateD(size_t n, size_t m)
 {
 	cout << "Directed graph generated:" << endl;
@@ -174,7 +202,9 @@ void generateU(size_t n, size_t m) {
 	{
 		size_t j, k;
 		j = random(1, n); //[1,n]
-		while (true) {
+		//for the smaller example, in case all edges are on the same vertice
+		while (true) 
+		{
 			if (adj[j - 1].size() == n - 1)
 			{
 				j = random(1, n);
@@ -219,6 +249,68 @@ void generateU(size_t n, size_t m) {
 	//	}
 	//}
 
+}
+void generateBi(size_t n, size_t m) {
+	cout <<"bipartite graph generated"<< endl;
+	cout << "n=" << n << " m=" << m << endl;
+	//distribute n1 vertices for the first block and m1 edges towards the other block
+	size_t n1 = random(1,n);
+	size_t m1 = random(1,m);
+	adj = vector<vector<int> >(n, vector<int>());
+	v = new vertice[n];
+	for (size_t i = 0; i < n; i++) {
+		v[i].index = i;
+	}
+	//assign edges from the first block
+	for (size_t i = 0; i < m1; i++)//push m1 lines in template vector
+	{
+		size_t j, k;
+		j = random(1, n1); //[1,n1]
+		k = random(n1+1,n);//[n1+1,n]
+		if (!equal(adj[j - 1], k - 1) )  // if elements are not repeatd or are empty, return false, push element to the back
+		{
+			adj[j - 1].push_back(k - 1);
+		}
+		else {
+			//make sure there are exactly m edges in the graph, in case the vector has the same elements.
+			while (true)
+			{
+				k = random(n1+1,n);
+				if (!equal(adj[j - 1], k - 1))
+				{
+					adj[j - 1].push_back(k - 1);
+					break;
+				}
+			}
+
+
+		}
+	}
+//and the second block
+	for (size_t i = 0; i < m-m1; i++)//push m1 lines in template vector
+	{
+		size_t j, k;
+		j = random(1, n1); //[1,n1]
+		k = random(n1 + 1, n);//[n1+1,n]
+		if (!equal(adj[k - 1], j - 1))  // if elements are not repeatd or are empty, return false, push element to the back
+		{
+			adj[k - 1].push_back(j - 1);
+		}
+		else {
+			//make sure there are exactly m edges in the graph, in case the vector has the same elements.
+			while (true)
+			{
+				j = random(1, n1);
+				if (!equal(adj[k - 1], j - 1))
+				{
+					adj[k - 1].push_back(j - 1);
+					break;
+				}
+			}
+
+
+		}
+	}
 }
 void userInterface() 
 {
@@ -499,14 +591,6 @@ void test() {
 
 	cout << dif1 << endl;
 }
-/*The function inputD is used to manually input the graph
-	input format:
-	* n m(first line)
-	* x1 y1
-	* x2 y2
-	* бн
-	* xm ym
-	*/
 int Max(size_t a, size_t b, size_t c)
 {
 	size_t max;
@@ -569,15 +653,32 @@ void Input_data(const string& filename) {
 	in.close();
 	//this block will assign data into the vertice template in terms of the adjancancy list
 }
+
+
+void Output_data() {
+	ofstream data("out.txt");
+	size_t m = Num_of_edges(adj);
+	for (size_t i = 0; i < m; i++)
+	{
+		size_t n = adj[i].size();
+		for (size_t j = 0; j < n; j++) 
+		{		data <<i<<" "<< adj[i][j] << "\n";}
+
+	}
+	data.close();
+}
+
+
 int main(){
 
-	Input_data("out.txt");
+	//Input_data("out.txt");
 
-	//srand((int)time(NULL));  // generate random seeds, use and only use once
-	//generateD(1000,5000);		
-	Print_data();	
+srand((int)time(NULL));  // generate random seeds, use and only use once
+generateBi(20,20);	
+Print_adj_matrix();
+//	Print_adj_list();	
 //	compareDFS();
 //	isExplored();
-
+	Output_data();
 	return 0;
 }
