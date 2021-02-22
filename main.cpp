@@ -52,6 +52,7 @@ vector<vector<int> > adj;//record the neighbours
 //	}
 //}
 bool equal(vector<int> &temp,size_t x) {
+	//if one veritce adjecancy list temp owns the same element x, this function will return true
 	size_t n = temp.size();
 	bool equal = false;
 	if (n == 0) {
@@ -135,6 +136,7 @@ bool isExplored() {
 
 void generateD(size_t n, size_t m)
 {
+	
 	cout << "Directed graph generated:" << endl;
 	cout << "n=" << n << " m=" << m << endl;
 	adj = vector<vector<int> >(n, vector<int>());
@@ -579,17 +581,27 @@ void bfsDeque() {
 	}
 	D.~deque<vertice>();
 }
-void test() {
-	clock_t t1;//get current time
-	t1 = clock();
-	dfsStack();
-	clock_t t2;//get current time
-	t2 = clock();
+void test_directed() {
+	ofstream exp_data("dir_test.csv");// For the convenience of analyzing
+	size_t n, m;
 
-	double dif1;
-	dif1 = difftime(t2, t1);
-
-	cout << dif1 << endl;
+	for (size_t i = 1; i < 100; i++) {
+		n = 100 * i;
+		//m = n + 2;
+		m = (size_t)(pow(n, 2) - n - 2) / 2;// m ->n^2
+		generateD(n,m);
+		clock_t t1, t2, t3;
+		t1 = clock();//get current time
+		dfsStack();
+		t2 = clock();
+		double dif1, dif2;
+		dif1 = difftime(t2, t1);
+		dfsDeque();
+		t3 = clock();
+		dif2 = difftime(t3, t2);
+		exp_data << dif1 <<","<< dif2 << "\n";
+	}
+	exp_data.close();
 }
 int Max(size_t a, size_t b, size_t c)
 {
@@ -617,6 +629,19 @@ void compareDFS() {
 	t3 = clock();
 	dif2 = difftime(t3, t2);
 	cout << "Naive stack takes " <<dif1<<" ms" <<endl;
+	cout << "Deque takes " << dif2 << " ms" << endl;
+}
+void compareBFS() {
+	clock_t t1, t2, t3;
+	t1 = clock();//get current time
+	bfsQueue();
+	t2 = clock();
+	double dif1, dif2;
+	dif1 = difftime(t2, t1);
+	bfsDeque();
+	t3 = clock();
+	dif2 = difftime(t3, t2);
+	cout << "Naive queue takes " << dif1 << " ms" << endl;
 	cout << "Deque takes " << dif2 << " ms" << endl;
 }
 void Input_data(const string& filename) {
@@ -673,12 +698,14 @@ int main(){
 
 	//Input_data("out.txt");
 
-srand((int)time(NULL));  // generate random seeds, use and only use once
-generateBi(20,20);	
-Print_adj_matrix();
+//srand((int)time(NULL));  // generate random seeds, use and only use once, ensure that every execuation is random
+//generateBi(1480000,1480000);	//size_t range 18446744073709551615(2^64-1)
+////Print_adj_matrix();
 //	Print_adj_list();	
-//	compareDFS();
+	//compareDFS();
+//
 //	isExplored();
-	Output_data();
+//	Output_data();
+	test_directed();
 	return 0;
 }
