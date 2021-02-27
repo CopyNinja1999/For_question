@@ -39,7 +39,9 @@ void Input_data(const string& filename) {
 		if (in.eof()) { break; }
 	}
 	//this block will count the number of lines and calculate the maximun number appeared in the file, which are the parameters n, m(vertice, edge)
-	in.seekg(0, ios::beg);
+	in.clear();
+	in.seekg(0L, ios::beg);
+	m-=1;
 	n += 1;
 	adj = vector<vector<int> >(n, vector<int>());
 	for (size_t i = 0; i < m; i++) 
@@ -51,6 +53,7 @@ void Input_data(const string& filename) {
 		x = stoi(data1);
 		y = stoi(data2);
 		adj[x].push_back(y);
+		cout<<x<<y<<endl;
 	}
 	in.close();
 	//this block will assign data into the vertice template in terms of the adjancancy list
@@ -70,4 +73,5 @@ void Print_data() {
 int main() {
 	Input_data("out.txt");
 	Print_data();
+	return 0 ;
 }
