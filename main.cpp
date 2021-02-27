@@ -64,7 +64,7 @@ bool equal(vector<int> &temp,size_t x) {
 			if (c >= n || c < 0) { 
 				cout << "vetcor out of range" << endl; 
 			break; }
-			if (temp[c] == x)
+			if (temp[c] ==(int)x)
 			{
 				equal = true;
 				return equal;
@@ -430,7 +430,8 @@ void dfsRecursive() //the naive implementation of directed dfs
 	}
 
 }	
-void dfsStack() {//using naive c++ stl stack
+void dfsStack() {
+	//using naive c++ stl stack
 	size_t n = adj.size();
 	for (size_t i = 0; i < n; i++)
 	{
@@ -467,7 +468,7 @@ void dfsStack() {//using naive c++ stl stack
 	}
 
 
-	S.~stack<vertice>();//release memory
+//	S.~stack<vertice>();//release memory
 }
 void dfsDeque() {
 	size_t n = adj.size();
@@ -504,7 +505,7 @@ void dfsDeque() {
 			}
 		}
 	}
-	D.~deque<vertice>();//release memory
+//	D.~deque<vertice>();//release memory
 
 }
 void showOrder() {
@@ -696,16 +697,17 @@ void Output_data() {
 
 int main(){
 
-	//Input_data("out.txt");
+//	Input_data("out.txt");
 
-//srand((int)time(NULL));  // generate random seeds, use and only use once, ensure that every execuation is random
-//generateBi(1480000,1480000);	//size_t range 18446744073709551615(2^64-1)
-////Print_adj_matrix();
-//	Print_adj_list();	
-	//compareDFS();
+srand((int)time(NULL));  // generate random seeds, use and only use once, ensure that every execuation is random
+generateBi(10,10);	//size_t range 18446744073709551615(2^64-1)
+Print_adj_matrix();
+	Print_adj_list();
+//	dfsStack();	
+compareDFS();
 //
-//	isExplored();
+	isExplored();
 //	Output_data();
-	test_directed();
+	//test_directed();
 	return 0;
 }
