@@ -468,7 +468,7 @@ void dfsStack() {
 	}
 
 
-//	S.~stack<vertice>();//release memory
+	//S.~stack<vertice>();//release memory
 }
 void dfsDeque() {
 	size_t n = adj.size();
@@ -505,7 +505,7 @@ void dfsDeque() {
 			}
 		}
 	}
-//	D.~deque<vertice>();//release memory
+	//D.~deque<vertice>();//release memory
 
 }
 void showOrder() {
@@ -549,7 +549,7 @@ void bfsQueue()
 
 		}
 	}
-	Q.~queue<vertice>();
+	//Q.~queue<vertice>();
 }
 void bfsDeque() {
 	size_t n = adj.size();
@@ -580,7 +580,7 @@ void bfsDeque() {
 
 		}
 	}
-	D.~deque<vertice>();
+	//D.~deque<vertice>();
 }
 void test_directed() {
 	ofstream exp_data("dir_test.csv");// For the convenience of analyzing
@@ -663,8 +663,14 @@ void Input_data(const string& filename) {
 		if (in.eof()) { break; }
 	}
 	//this block will count the number of lines and calculate the maximun number appeared in the file, which are the parameters n, m(vertice, edge)
+	in.clear();
 	in.seekg(0, ios::beg);
 	n += 1;
+	m-=1;
+	v = new vertice[n];
+	for (size_t i = 0; i < n; i++) {
+		v[i].index = i;
+	}
 	adj = vector<vector<int> >(n, vector<int>());
 	for (size_t i = 0; i < m; i++)
 	{
@@ -695,18 +701,18 @@ void Output_data() {
 }
 
 
-int main(){
+int main(int argc, char *argv[]){
 
-//	Input_data("out.txt");
+Input_data("out.txt");
 
-srand((int)time(NULL));  // generate random seeds, use and only use once, ensure that every execuation is random
-generateBi(10,10);	//size_t range 18446744073709551615(2^64-1)
-Print_adj_matrix();
+//srand((int)time(NULL));  // generate random seeds, use and only use once, ensure that every execuation is random
+//generateBi(10,10);	//size_t range 18446744073709551615(2^64-1)
+//Print_adj_matrix();
 	Print_adj_list();
 //	dfsStack();	
 compareDFS();
 //
-	isExplored();
+//	isExplored();
 //	Output_data();
 	//test_directed();
 	return 0;
