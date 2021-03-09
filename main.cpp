@@ -34,7 +34,7 @@ struct vertice {
 	bool visited = false;
 };
 size_t cc = 1;//count isolated components
-size_t preCounter,postCounter;
+size_t preCounter, postCounter;
 vertice* v;//record the status
 vector<vector<int> > adj;//record the neighbours
 //void printV(vertice v) {
@@ -51,7 +51,7 @@ vector<vector<int> > adj;//record the neighbours
 //		puts("");
 //	}
 //}
-bool equal(vector<int> &temp,size_t x) {
+bool equal(vector<int>& temp, size_t x) {
 	//if one veritce adjecancy list temp owns the same element x, this function will return true
 	size_t n = temp.size();
 	bool equal = false;
@@ -61,10 +61,11 @@ bool equal(vector<int> &temp,size_t x) {
 	else {
 		for (size_t c = 0; c < n; c++)
 		{
-			if (c >= n || c < 0) { 
-				cout << "vetcor out of range" << endl; 
-			break; }
-			if (temp[c] ==(int)x)
+			if (c >= n || c < 0) {
+				cout << "vetcor out of range" << endl;
+				break;
+			}
+			if (temp[c] == (int)x)
 			{
 				equal = true;
 				return equal;
@@ -74,11 +75,11 @@ bool equal(vector<int> &temp,size_t x) {
 		return equal;
 	}
 }
-size_t Num_of_edges(vector<vector<int>> &adj) {
-	size_t m=0;
+size_t Num_of_edges(vector<vector<int>>& adj) {
+	size_t m = 0;
 	size_t n = adj.size();
 	//in the adjacancy list, the number of edges is the sum of the edges that each vertice owns
-	for (size_t i = 0; i < n;i++) {
+	for (size_t i = 0; i < n; i++) {
 		m += adj[i].size();
 	}
 
@@ -98,7 +99,7 @@ void Print_adj_list() {
 }
 void Print_adj_matrix() {
 	int n = adj.size();
-	for (int i = 0; i < n;i++) {//outer loop, print i rows
+	for (int i = 0; i < n; i++) {//outer loop, print i rows
 		for (int j = 0; j < n; j++) {//inner loop, print dots
 			if (equal(adj[i], j)) //which means it has the element j
 			{
@@ -108,35 +109,35 @@ void Print_adj_matrix() {
 				cout << "0" << " ";
 		}
 		cout << endl;
-	
+
 	}
 }
 size_t random(int r, int b) {
 	size_t random;
-	random=(rand() % (b-r+1)) +r;//represents [r,b]
+	random = (rand() % (b - r + 1)) + r;//represents [r,b]
 
 //	cout << random << endl;
 	return random;
 }
 bool isExplored() {
 	size_t n = adj.size();
-	bool eFlag =true;
+	bool eFlag = true;
 	for (size_t i = 0; i < n; i++)
 	{
 		if (!v[i].visited) {
 			eFlag = false;
-			cout << "Traversal incomplete"<<endl;
+			cout << "Traversal incomplete" << endl;
 			break;
 		}
 	}
-	
+
 	return eFlag;
 }
 //check if the vector temp has the same element as x
 
 void generateD(size_t n, size_t m)
 {
-	
+
 	cout << "Directed graph generated:" << endl;
 	cout << "n=" << n << " m=" << m << endl;
 	adj = vector<vector<int> >(n, vector<int>());
@@ -173,7 +174,7 @@ void generateD(size_t n, size_t m)
 			while (true)
 			{
 				k = random(1, n);
-				if (!equal(adj[j - 1], k - 1)&&k!=j)//
+				if (!equal(adj[j - 1], k - 1) && k != j)//
 				{
 					adj[j - 1].push_back(k - 1);
 					break;
@@ -205,7 +206,7 @@ void generateU(size_t n, size_t m) {
 		size_t j, k;
 		j = random(1, n); //[1,n]
 		//for the smaller example, in case all edges are on the same vertice
-		while (true) 
+		while (true)
 		{
 			if (adj[j - 1].size() == n - 1)
 			{
@@ -232,7 +233,7 @@ void generateU(size_t n, size_t m) {
 			while (true)
 			{
 				k = random(1, n);
-				if (!equal(adj[j - 1], k - 1) && !equal(adj[k - 1], j - 1)&&k != j)
+				if (!equal(adj[j - 1], k - 1) && !equal(adj[k - 1], j - 1) && k != j)
 				{
 					adj[j - 1].push_back(k - 1);
 					adj[k - 1].push_back(j - 1);
@@ -253,11 +254,11 @@ void generateU(size_t n, size_t m) {
 
 }
 void generateBi(size_t n, size_t m) {
-	cout <<"bipartite graph generated"<< endl;
+	cout << "bipartite graph generated" << endl;
 	cout << "n=" << n << " m=" << m << endl;
 	//distribute n1 vertices for the first block and m1 edges towards the other block
-	size_t n1 = random(1,n);
-	size_t m1 = random(1,m);
+	size_t n1 = random(1, n);
+	size_t m1 = random(1, m);
 	adj = vector<vector<int> >(n, vector<int>());
 	v = new vertice[n];
 	for (size_t i = 0; i < n; i++) {
@@ -268,8 +269,8 @@ void generateBi(size_t n, size_t m) {
 	{
 		size_t j, k;
 		j = random(1, n1); //[1,n1]
-		k = random(n1+1,n);//[n1+1,n]
-		if (!equal(adj[j - 1], k - 1) )  // if elements are not repeatd or are empty, return false, push element to the back
+		k = random(n1 + 1, n);//[n1+1,n]
+		if (!equal(adj[j - 1], k - 1))  // if elements are not repeatd or are empty, return false, push element to the back
 		{
 			adj[j - 1].push_back(k - 1);
 		}
@@ -277,7 +278,7 @@ void generateBi(size_t n, size_t m) {
 			//make sure there are exactly m edges in the graph, in case the vector has the same elements.
 			while (true)
 			{
-				k = random(n1+1,n);
+				k = random(n1 + 1, n);
 				if (!equal(adj[j - 1], k - 1))
 				{
 					adj[j - 1].push_back(k - 1);
@@ -288,8 +289,8 @@ void generateBi(size_t n, size_t m) {
 
 		}
 	}
-//and the second block
-	for (size_t i = 0; i < m-m1; i++)//push m1 lines in template vector
+	//and the second block
+	for (size_t i = 0; i < m - m1; i++)//push m1 lines in template vector
 	{
 		size_t j, k;
 		j = random(1, n1); //[1,n1]
@@ -314,17 +315,17 @@ void generateBi(size_t n, size_t m) {
 		}
 	}
 }
-void userInterface() 
+void userInterface()
 {
 	size_t a;
-	size_t n=0, m=0;
+	size_t n = 0, m = 0;
 	cout << "Welcome to algorithms test, please select the type of the graph:" << "\n 1.small 2.large\n" << endl;
 	cin >> a;
-	switch (a) 
+	switch (a)
 	{
 	case 1:
 		cout << "You selected small.\n" << endl;
-	    n = random(5, 20);
+		n = random(5, 20);
 		break;
 	case 2:
 		cout << "You selected small.\n" << endl;
@@ -333,18 +334,18 @@ void userInterface()
 	default:
 		cout << "Input illegal.\n" << endl;
 		break;
-	}	
+	}
 	cout << " 1.sparse 2.dense\n" << endl;
 	cin >> a;
 	switch (a)
 	{
 	case 1:
-		cout << "You selected sparse.\n"<<endl;
-		m = n+2;
+		cout << "You selected sparse.\n" << endl;
+		m = n + 2;
 		break;
 	case 2:
 		cout << "You selected dense.\n" << endl;
-		m= (size_t)(pow(n,2)-n-2)/2;//undirected
+		m = (size_t)(pow(n, 2) - n - 2) / 2;//undirected
 		break;
 	default:
 		cout << "Input illegal.\n" << endl;
@@ -356,11 +357,11 @@ void userInterface()
 	cin >> b;
 	switch (b) {
 	case 1:
-		
+
 		cout << "You selected directed.\n" << endl;
 		generateD(n, m);
-		
-			break;
+
+		break;
 	case 2:
 		cout << "You selected undirected.\n" << endl;
 		generateU(n, m);
@@ -369,7 +370,7 @@ void userInterface()
 		cout << "Input illegal.\n" << endl;
 		break;
 
-		}
+	}
 	cout << "Print the graph?(Recommended when small graph is selected)" << "\n 1.Yes 2.No\n" << endl;
 	cin >> a;
 	switch (a)
@@ -389,7 +390,7 @@ void userInterface()
 		break;
 	}
 
-	};
+};
 
 
 
@@ -403,20 +404,23 @@ void explore(int i)
 		if (!adj[i].empty())
 		{
 			for (int j = 0; j < n; j++)
-			{int w = adj[i][j];//acutal index in the vector
+			{
+				int w = adj[i][j];//acutal index in the vector
 				explore(w);
 			}
 			v[i].postOrder = postCounter++;
 		}
-		else { 
+		else {
 			v[i].postOrder = postCounter++;
-			return; }//if the vertice is sink, return the upper level 
+			return;
+		}//if the vertice is sink, return the upper level 
 	}
 
 
 	else {
-		
-		return;} //if visited, return immediately
+
+		return;
+	} //if visited, return immediately
 }
 void dfsRecursive() //the naive implementation of directed dfs
 {
@@ -429,7 +433,7 @@ void dfsRecursive() //the naive implementation of directed dfs
 		}
 	}
 
-}	
+}
 void dfsStack() {
 	//using naive c++ stl stack
 	size_t n = adj.size();
@@ -514,10 +518,10 @@ void showOrder() {
 	{
 		cout << i << ": " << v[i].postOrder << endl;
 
-		
+
 	}
 }
-void bfsQueue() 
+void bfsQueue()
 {
 	size_t n = adj.size();
 	for (size_t i = 0; i < n; i++)
@@ -526,8 +530,8 @@ void bfsQueue()
 	}
 	queue<vertice> Q;
 	for (size_t k = 0; k < n; k++) {
-		if (v[k].visited) { 
-			continue; 
+		if (v[k].visited) {
+			continue;
 		}
 		else
 			v[k].visited = true;
@@ -582,15 +586,17 @@ void bfsDeque() {
 	}
 	//D.~deque<vertice>();
 }
+//file format .csv, .txt
 void test_directed() {
-	ofstream exp_data("dir_test.csv");// For the convenience of analyzing
+	ofstream exp_data("bipartite_test.txt");// For the convenience of analyzing
 	size_t n, m;
 
-	for (size_t i = 1; i < 100; i++) {
-		n = 100 * i;
-		//m = n + 2;
-		m = (size_t)(pow(n, 2) - n - 2) / 2;// m ->n^2
-		generateD(n,m);
+	for (size_t i = 1; i < 50; i++) {
+		n = 10000 * i;
+		m = n + 2;
+		//m = (size_t)(pow(n, 2) - n - 2) / 2;// m ->n^2
+		//generateD(n, m);
+		generateBi(n, m);
 		clock_t t1, t2, t3;
 		t1 = clock();//get current time
 		dfsStack();
@@ -600,7 +606,7 @@ void test_directed() {
 		dfsDeque();
 		t3 = clock();
 		dif2 = difftime(t3, t2);
-		exp_data << dif1 <<","<< dif2 << "\n";
+		exp_data <<n<<" "<< dif1 << " " << dif2 << "\n";
 	}
 	exp_data.close();
 }
@@ -620,16 +626,16 @@ int Max(size_t a, size_t b, size_t c)
 	return max;
 }
 void compareDFS() {
-	clock_t t1,t2,t3;
+	clock_t t1, t2, t3;
 	t1 = clock();//get current time
 	dfsStack();
 	t2 = clock();
-	double dif1,dif2;
+	double dif1, dif2;
 	dif1 = difftime(t2, t1);
 	dfsDeque();
 	t3 = clock();
 	dif2 = difftime(t3, t2);
-	cout << "Naive stack takes " <<dif1<<" ms" <<endl;
+	cout << "Naive stack takes " << dif1 << " ms" << endl;
 	cout << "Deque takes " << dif2 << " ms" << endl;
 }
 void compareBFS() {
@@ -666,7 +672,7 @@ void Input_data(const string& filename) {
 	in.clear();
 	in.seekg(0, ios::beg);
 	n += 1;
-	m-=1;
+	m -= 1;
 	v = new vertice[n];
 	for (size_t i = 0; i < n; i++) {
 		v[i].index = i;
@@ -693,27 +699,29 @@ void Output_data() {
 	for (size_t i = 0; i < m; i++)
 	{
 		size_t n = adj[i].size();
-		for (size_t j = 0; j < n; j++) 
-		{		data <<i<<" "<< adj[i][j] << "\n";}
+		for (size_t j = 0; j < n; j++)
+		{
+			data << i << " " << adj[i][j] << "\n";
+		}
 
 	}
 	data.close();
 }
 
 
-int main(int argc, char *argv[]){
+int main(int argc, char* argv[]) {
 
-Input_data("out.txt");
+	//Input_data("out.txt");
 
-//srand((int)time(NULL));  // generate random seeds, use and only use once, ensure that every execuation is random
-//generateBi(10,10);	//size_t range 18446744073709551615(2^64-1)
-//Print_adj_matrix();
-	Print_adj_list();
-//	dfsStack();	
-compareDFS();
-//
-//	isExplored();
-//	Output_data();
-	//test_directed();
+	//srand((int)time(NULL));  // generate random seeds, use and only use once, ensure that every execuation is random
+	//generateBi(10,10);	//size_t range 18446744073709551615(2^64-1)
+	//Print_adj_matrix();
+	//Print_adj_list();
+	//	dfsStack();	
+	//compareDFS();
+	//
+	//	isExplored();
+	//	Output_data();
+	test_directed();
 	return 0;
 }
