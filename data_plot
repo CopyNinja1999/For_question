@@ -1,0 +1,38 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#  data_plot
+#  
+#  Copyright 2021 123 <123@DESKTOP-GGMH6CF>
+#  
+#  This program is free software; you can redistribute it and/or modify
+#  it under the terms of the GNU General Public License as published by
+#  the Free Software Foundation; either version 2 of the License, or
+#  (at your option) any later version.
+#  
+#  This program is distributed in the hope that it will be useful,
+#  but WITHOUT ANY WARRANTY; without even the implied warranty of
+#  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#  GNU General Public License for more details.
+#  
+#  You should have received a copy of the GNU General Public License
+#  along with this program; if not, write to the Free Software
+#  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#  MA 02110-1301, USA.
+#  
+#  
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+data = np.loadtxt("bipartite_test.txt",dtype = np.int)
+print(data)
+x = data[:,0]
+y = data[:,1] 
+print(x[2])
+print(y[2])
+plt.figure(figsize= (6, 2.5)) # 设置图形宽高比
+plt.plot(x, y, 'o')
+y= data[:,2]
+plt.plot(x,y,'o',color='red') # 用第3行数据突出显示数据，红线圆点。
+plt.grid(ls = '--') # 设置网络线风格为虚线
+plt.show()
