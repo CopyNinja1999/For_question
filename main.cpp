@@ -19,6 +19,7 @@ Going deeper:1.When the cache miss happened
 #include <queue>
 #include <string>
 #include <sstream>
+#include <chrono>
 //#include "Vertice.h"
 //#include "Graph.h";
 using namespace std;
@@ -597,16 +598,14 @@ void test_directed() {
 		//m = (size_t)(pow(n, 2) - n - 2) / 2;// m ->n^2
 		//generateD(n, m);
 		generateBi(n, m);
-		clock_t t1, t2, t3;
-		t1 = clock();//get current time
+		auto start = chrono::steady_clock::now();
 		dfsStack();
-		t2 = clock();
-		double dif1, dif2;
-		dif1 = difftime(t2, t1);
+		auto end1 = chrono::steady_clock::now();
 		dfsDeque();
-		t3 = clock();
-		dif2 = difftime(t3, t2);
-		exp_data <<n<<" "<< dif1 << " " << dif2 << "\n";
+		auto end2 = chrono::steady_clock::now();
+		std::chrono::duration<double> elapsed_time1 = end1 - start;
+		std::chrono::duration<double> elapsed_time2 = end2 - end1;
+		exp_data <<n<<" "<< elapsed_time1.count()*1000 << " " << elapsed_time1.count()*1000 << "\n";
 	}
 	exp_data.close();
 }
@@ -626,17 +625,15 @@ int Max(size_t a, size_t b, size_t c)
 	return max;
 }
 void compareDFS() {
-	clock_t t1, t2, t3;
-	t1 = clock();//get current time
+	auto start = chrono::steady_clock::now();
 	dfsStack();
-	t2 = clock();
-	double dif1, dif2;
-	dif1 = difftime(t2, t1);
+	auto end1 = chrono::steady_clock::now();
 	dfsDeque();
-	t3 = clock();
-	dif2 = difftime(t3, t2);
-	cout << "Naive stack takes " << dif1 << " ms" << endl;
-	cout << "Deque takes " << dif2 << " ms" << endl;
+	auto end2 = chrono::steady_clock::now();
+	std::chrono::duration<double> elapsed_time1 = end1 - start;
+	std::chrono::duration<double> elapsed_time2 = end2 - end1;
+	cout << "Naive stack takes " <<elapsed_time1.count()*1000 << " ms" << endl;
+	cout << "Deque takes " << elapsed_time2.count()*1000 << " ms" << endl;
 }
 void compareBFS() {
 	clock_t t1, t2, t3;
