@@ -30,9 +30,13 @@ x = data[:,0]
 y = data[:,1] 
 print(x[2])
 print(y[2])
-plt.figure(figsize= (6, 2.5)) # 设置图形宽高比
-plt.plot(x, y, 'o')
+plt.figure(figsize= (6, 2.5)) # 
+#plt.plot(x, y, 'o')
+plt.plot(x, y,label="stack/queue")
 y= data[:,2]
-plt.plot(x,y,'o',color='red') # 用第3行数据突出显示数据，红线圆点。
-plt.grid(ls = '--') # 设置网络线风格为虚线
+plt.plot(x,y,color='red',label="deque") # represent the 
+plt.grid(ls = '--') # set figure style 
+plt.xlabel("graph size")
+plt.ylabel("traversal time(ms)")
+plt.legend()#show the notation
 plt.show()
