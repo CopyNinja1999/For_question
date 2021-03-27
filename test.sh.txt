@@ -1,0 +1,20 @@
+#!/bin/sh
+g++ -std=c++11 Source1.cpp;
+# check ./a.out exists
+if test -x ./a.out ; then
+   EXE=./a.out
+else
+   echo There is no 'a.out' to run in this directory
+   exit -1
+fi
+if test -e bipartite_test.txt ; then
+rm bipartite_test.txt;
+fi
+
+for((i=1;i<1000;i++));
+do
+       let n=$i*100000;
+echo "n=$n, i=$i";
+ ./PaRMAT -nVertices $n -nEdges $n -threads 8 -noEdgeToSelf -noDuplicateEdges -undirected;
+ ./a.out;
+done;
