@@ -25,16 +25,14 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 data = np.loadtxt("bipartite_test.txt",dtype = np.float)
-print(data)
-x = data[:,0]
-y = data[:,1] 
-print(x[2])
-print(y[2])
 plt.figure(figsize= (6, 2.5)) # 
-#plt.plot(x, y, 'o')
-plt.plot(x, y,label="stack/queue")
+plt.plot(x, y,label="bfs_deque")
 y= data[:,2]
-plt.plot(x,y,color='red',label="deque") # represent the 
+plt.plot(x,y,color='red',label="dfs_deque") # represent the 
+y= data[:,3]
+plt.plot(x,y,color='green',label="bfs_queue") # represent the 
+y= data[:,4]
+plt.plot(x,y,color='yellow',label="dfs_stack") # represent the 
 plt.grid(ls = '--') # set figure style 
 plt.xlabel("graph size")
 plt.ylabel("traversal time(ms)")
