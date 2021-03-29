@@ -24,7 +24,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
-data = np.loadtxt("bipartite_test.txt",dtype = np.int)
+data = np.loadtxt("bipartite_test.txt",dtype = np.float)
 print(data)
 x = data[:,0]
 y = data[:,1] 
@@ -38,5 +38,5 @@ plt.plot(x,y,color='red',label="deque") # represent the
 plt.grid(ls = '--') # set figure style 
 plt.xlabel("graph size")
 plt.ylabel("traversal time(ms)")
-plt.legend()#show the notation
+plt.legend()#show the label
 plt.show()

@@ -218,14 +218,21 @@ void bfsDeque() {
 }
 void write_output_dfs() {
 	ofstream exp_data("bipartite_test.txt", std::ios::app);// For the convenience of analyzing
+
 		auto start = chrono::steady_clock::now();
-		dfsStack();
+		bfsDeque();
 		auto end1 = chrono::steady_clock::now();
 		dfsDeque();
 		auto end2 = chrono::steady_clock::now();
+		bfsQueue();
+		auto end3 = chrono::steady_clock::now();
+		dfsStack();
+		auto end4 = chrono::steady_clock::now();
 		std::chrono::duration<double> elapsed_time1 = end1 - start;
 		std::chrono::duration<double> elapsed_time2 = end2 - end1;
-		exp_data <<adj.size() << " " << elapsed_time1.count() * 1000 << " " << elapsed_time2.count() * 1000 << endl;
+		std::chrono::duration<double> elapsed_time3 = end3 - end2;
+		std::chrono::duration<double> elapsed_time4 = end4 - end3;
+		exp_data <<adj.size() << " " << elapsed_time1.count() * 1000 << " " << elapsed_time2.count() * 1000 << " "<< elapsed_time3.count() * 1000<< " " << elapsed_time4.count() * 1000<<endl;
 	exp_data.close();
 }
 void Print_data() {
