@@ -20,22 +20,15 @@ Going deeper:1.When the cache miss happened
 #include <string>
 #include <sstream>
 #include <chrono>
-//#include "Vertice.h"
-//#include "Graph.h";
 using namespace std;
 using std::vector;
 using std::pair;
 using std::stack;//neccessary
 using std::queue;
 struct vertice {
-	size_t postOrder = 0;
-	size_t preOrder = 0;
-	size_t ccNum = 0;
 	size_t index = 0;
 	bool visited = false;
 };
-size_t cc = 1;//count isolated components
-size_t preCounter, postCounter;
 vertice* v;//record the status
 vector<vector<int> > adj;//record the neighbours
 //void printV(vertice v) {
@@ -92,7 +85,10 @@ void Print_adj_list() {
 	for (int i = 0; i < n; i++) {
 		int m = adj[i].size();
 		cout << i << ": ";
-		for (int j = 0; j < m; j++) { cout << adj[i][j] << " ,"; }
+		for (int j = 0; j < m; j++) { 
+			cout << adj[i][j] << " ,"; 
+			if (j == m - 1) { break; }
+		}
 		cout << endl;
 
 	}
@@ -244,22 +240,12 @@ void generateU(size_t n, size_t m) {
 
 		}
 	}
-	//if (n < 25) {
-	//	for (size_t i = 0; i < n; i++)
-	//	{
-	//		cout << i << ": ";
-	//		printV(v[i]);
-
-	//	}
-	//}
 
 }
-void generateBi(size_t n, size_t m) {
+void generateBi(size_t n, size_t m, size_t n1, size_t m1) {
 	cout << "bipartite graph generated" << endl;
 	cout << "n=" << n << " m=" << m << endl;
 	//distribute n1 vertices for the first block and m1 edges towards the other block
-	size_t n1 = random(1, n);
-	size_t m1 = random(1, m);
 	adj = vector<vector<int> >(n, vector<int>());
 	v = new vertice[n];
 	for (size_t i = 0; i < n; i++) {
@@ -316,6 +302,27 @@ void generateBi(size_t n, size_t m) {
 		}
 	}
 }
+
+//generating dense graph simply means build edges between all the nodes
+
+void generateDense(size_t n) 
+{
+	cout << "Dense graph generated" << endl;
+	cout << "n=" << n << " m=" << pow(n,2)<< endl;
+	adj = vector<vector<int> >(n, vector<int>());
+	v = new vertice[n];
+	for (size_t i = 0; i < n; i++) {
+		v[i].index = i;
+	}
+	for (size_t j = 0; j < n; j++)
+	{
+		for (size_t l = 0; l <n;l++) {
+			adj[j].push_back(l);
+		}
+		
+	}
+}
+
 void userInterface()
 {
 	size_t a;
@@ -400,7 +407,7 @@ void explore(int i)
 	if (!v[i].visited)
 	{
 		v[i].visited = true;
-		v[i].ccNum = cc;
+	
 		int n = adj[i].size();
 		if (!adj[i].empty())
 		{
@@ -409,28 +416,31 @@ void explore(int i)
 				int w = adj[i][j];//acutal index in the vector
 				explore(w);
 			}
-			v[i].postOrder = postCounter++;
+		
 		}
 		else {
-			v[i].postOrder = postCounter++;
+		
 			return;
 		}//if the vertice is sink, return the upper level 
 	}
 
 
 	else {
-
 		return;
 	} //if visited, return immediately
 }
 void dfsRecursive() //the naive implementation of directed dfs
 {
-	postCounter = 0;
+
 	int n = adj.size();
+	for (size_t i = 0; i < n; i++)
+	{
+		v[i].visited = false;
+	}
 	for (int w = 0; w < n; w++) {
 		if (!v[w].visited) {
 			explore(w);
-			cc++;
+			
 		}
 	}
 
@@ -473,29 +483,29 @@ void dfsStack() {
 	}
 
 
-	//S.~stack<vertice>();//release memory
 }
-void dfsDeque() {
+void dfs_B() {
+	//using naive c++ stl stack
 	size_t n = adj.size();
 	for (size_t i = 0; i < n; i++)
 	{
 		v[i].visited = false;
 	}
-	deque<vertice> D;
+	stack<int> S;
 	for (size_t k = 0; k < n; k++) {
 		if (v[k].visited) { continue; }
 		else
-			v[k].visited = true;//start point v[0]
-		D.push_front(v[k]);
-		while (!D.empty())
+			v[k].visited = true;//start with point v[0]
+		S.push(v[k].index);
+		while (!S.empty())
 		{
-			vertice u = D.front();
-			D.pop_front();
-			size_t m = adj[u.index].size();
-			int index = -1;
+			int u = S.top();
+			//S.pop();//these two steps represent the operation pop
+			size_t m = adj[u].size();
+			int  index = -1;
 			for (size_t j = 0; j < m; j++)
 			{
-				size_t i = adj[u.index][j];
+				size_t i = adj[u][j];
 				if (!v[i].visited)
 				{
 					index = i;
@@ -504,23 +514,136 @@ void dfsDeque() {
 			}
 			if (index != -1)
 			{
-				D.push_front(u);
+				//S.push(u);
 				v[index].visited = true;
-				D.push_front(v[index]);
+				S.push(v[index].index);
 			}
+			else//no unvisited vertex in u
+				S.pop();
 		}
 	}
-	//D.~deque<vertice>();//release memory
 
+
+	//S.~stack<vertice>();//release memory
 }
-void showOrder() {
+void dfs_A() {
+	//using naive c++ stl stack
 	size_t n = adj.size();
 	for (size_t i = 0; i < n; i++)
 	{
-		cout << i << ": " << v[i].postOrder << endl;
-
-
+		v[i].visited = false;
 	}
+	stack<int> S;
+	for (size_t k = 0; k < n; k++) {
+		if (v[k].visited) { continue; }
+		else
+		//	v[k].visited = true;//start with point v[0]
+		S.push(v[k].index);
+		while (!S.empty())
+		{
+			int u = S.top();
+		S.pop();//these two steps represent the operation pop
+		if (!v[u].visited) {
+			v[u].visited = true;
+			size_t m = adj[u].size();
+for (size_t j = 0; j < m; j++)
+			{
+	size_t i = adj[u][j];
+				if (!v[i].visited)
+				{
+					S.push(v[i].index);
+				}
+			}
+		}
+		
+		}
+	}
+
+
+	//S.~stack<vertice>();//release memory
+}
+void dfsDeque() {
+	//using naive c++ stl stack
+	size_t n = adj.size();
+	for (size_t i = 0; i < n; i++)
+	{
+		v[i].visited = false;
+	}
+	deque<int> D;
+	for (size_t k = 0; k < n; k++) {
+		if (v[k].visited) { continue; }
+		else
+		//	v[k].visited = true;//start with point v[0]
+		D.push_front(v[k].index);
+		while (!D.empty())
+		{
+			int u = D.front();
+			D.pop_front();//these two steps represent the operation pop
+			if (!v[u].visited) {
+				v[u].visited = true;
+				size_t m = adj[u].size();
+				for (size_t j = 0; j < m; j++)
+				{
+					size_t i = adj[u][j];
+					if (!v[i].visited)
+					{
+						D.push_front(v[i].index);
+					}
+				}
+			}
+
+		}
+	}
+}
+//void showOrder() {
+//	size_t n = adj.size();
+//	for (size_t i = 0; i < n; i++)
+//	{
+//		cout << i << ": " << v[i].postOrder << endl;
+//
+//
+//	}
+//}
+void bfs_A() {
+	size_t n = adj.size();
+	for (size_t i = 0; i < n; i++)
+	{
+		v[i].visited = false;
+	}
+	queue<int> Q;
+	for (size_t k = 0; k < n; k++) {
+		if (v[k].visited) {
+			continue;
+		}
+		else
+//			v[k].visited = true;
+		Q.push(v[k].index);//Enqueue()
+		while (!Q.empty())
+		{
+			int u = Q.front();
+			Q.pop();//these two steps represent the operation dequeue()
+			if (!v[u].visited)
+			{
+				v[u].visited = true;
+size_t m = adj[u].size();
+for (size_t j = 0; j < m; j++)
+			{
+				size_t i = adj[u][j];
+				if (!v[i].visited)
+				{
+					v[i].visited = true;
+					Q.push(v[i].index);
+				}
+			}
+
+			}
+			
+			
+
+		}
+	}
+	//Q.~queue<vertice>();
+
 }
 void bfsQueue()
 {
@@ -529,26 +652,26 @@ void bfsQueue()
 	{
 		v[i].visited = false;
 	}
-	queue<vertice> Q;
+	queue<int> Q;
 	for (size_t k = 0; k < n; k++) {
 		if (v[k].visited) {
 			continue;
 		}
 		else
 			v[k].visited = true;
-		Q.push(v[k]);
+		Q.push(v[k].index);
 		while (!Q.empty())
 		{
-			vertice u = Q.front();
+			int u = Q.front();
 			Q.pop();//these two steps represent the operation dequeue()
-			size_t m = adj[u.index].size();
+			size_t m = adj[u].size();
 			for (size_t j = 0; j < m; j++)
 			{
-				size_t i = adj[u.index][j];
+				size_t i = adj[u][j];
 				if (!v[i].visited)
 				{
 					v[i].visited = true;
-					Q.push(v[i]);
+					Q.push(v[i].index);
 				}
 			}
 
@@ -588,24 +711,89 @@ void bfsDeque() {
 	//D.~deque<vertice>();
 }
 //file format .csv, .txt
-void test_directed() {
-	ofstream exp_data("bipartite_test.txt");// For the convenience of analyzing
-	size_t n, m;
+void test_dense() {
+ofstream exp_data("bipartite_test.txt");// For the convenience of analyzing
+	size_t n;
 
-	for (size_t i = 1; i < 50; i++) {
-		n = 10000 * i;
-		m = n + 2;
-		//m = (size_t)(pow(n, 2) - n - 2) / 2;// m ->n^2
-		//generateD(n, m);
-		generateBi(n, m);
+	for (size_t i = 1; i <200; i++) {
+		n = 200 * i;
+		generateDense(n);
+		// Print_adj_list();
 		auto start = chrono::steady_clock::now();
-		dfsStack();
+		dfs_A();
+		/*bfsDeque();*/
 		auto end1 = chrono::steady_clock::now();
-		dfsDeque();
+		dfsStack();
 		auto end2 = chrono::steady_clock::now();
+		/*bfsQueue();*/
+		dfs_B();
+		auto end3 = chrono::steady_clock::now();
+		dfsRecursive();
+		auto end4 = chrono::steady_clock::now();
 		std::chrono::duration<double> elapsed_time1 = end1 - start;
 		std::chrono::duration<double> elapsed_time2 = end2 - end1;
-		exp_data <<n<<" "<< elapsed_time1.count()*1000 << " " << elapsed_time1.count()*1000 << "\n";
+		std::chrono::duration<double> elapsed_time3 = end3 - end2;
+		std::chrono::duration<double> elapsed_time4 = end4 - end3;
+		exp_data << adj.size() << " " << elapsed_time1.count() * 1000 << " " << elapsed_time2.count() * 1000 << " " << elapsed_time3.count() * 1000 << " " << elapsed_time4.count() * 1000 << endl;
+	}
+	exp_data.close();
+}
+void test_generation_sparse() {
+	size_t n;
+	ofstream exp_data("gen_time_sparse.txt");
+	for (size_t i = 1; i < 100; i++) {
+		n = 1000 * i;
+
+		// Print_adj_list();
+		auto start = chrono::steady_clock::now();
+		generateD(n,n);
+		/*bfsDeque();*/
+		auto end = chrono::steady_clock::now();
+		std::chrono::duration<double> elapsed_time1 = end - start;
+		exp_data << adj.size() << " " << elapsed_time1.count() * 1000 << endl;
+	}
+	exp_data.close();
+}
+void test_generation_dense() {
+	size_t n;
+	ofstream exp_data("gen_time_dense.txt");
+	for (size_t i = 1; i < 100; i++) {
+		n = 100 * i;
+
+		// Print_adj_list();
+		auto start = chrono::steady_clock::now();
+		generateDense(n);
+		/*bfsDeque();*/
+		auto end = chrono::steady_clock::now();
+		std::chrono::duration<double> elapsed_time1 = end - start;
+		exp_data << adj.size() << " " << elapsed_time1.count() * 1000 << endl;
+	}
+	exp_data.close();
+}
+void test_sparse() {
+	ofstream exp_data("bipartite_test.txt");// For the convenience of analyzing
+	size_t n;
+
+	for (size_t i = 1; i < 500; i++) {
+		n = 200 * i;
+		generateU(n,n+2);
+		// Print_adj_list();
+		auto start = chrono::steady_clock::now();
+		dfs_A();
+		/*bfsDeque();*/
+		auto end1 = chrono::steady_clock::now();
+		dfsStack();
+		auto end2 = chrono::steady_clock::now();
+		/*bfsQueue();*/
+		dfs_B();
+		auto end3 = chrono::steady_clock::now();
+		dfsRecursive();
+		auto end4 = chrono::steady_clock::now();
+		std::chrono::duration<double> elapsed_time1 = end1 - start;
+		std::chrono::duration<double> elapsed_time2 = end2 - end1;
+		std::chrono::duration<double> elapsed_time3 = end3 - end2;
+		std::chrono::duration<double> elapsed_time4 = end4 - end3;
+		exp_data << adj.size() << " " << elapsed_time1.count() * 1000 << " " << elapsed_time2.count() * 1000 << " " << elapsed_time3.count() * 1000 << " " << elapsed_time4.count() * 1000 << endl;
 	}
 	exp_data.close();
 }
@@ -624,29 +812,75 @@ int Max(size_t a, size_t b, size_t c)
 	else max = c;
 	return max;
 }
-void compareDFS() {
+void compare() {
 	auto start = chrono::steady_clock::now();
-	dfsStack();
+	bfsDeque();
 	auto end1 = chrono::steady_clock::now();
 	dfsDeque();
 	auto end2 = chrono::steady_clock::now();
+	bfsQueue();
+	auto end3 = chrono::steady_clock::now();
+	dfsStack();
+	auto end4 = chrono::steady_clock::now();
 	std::chrono::duration<double> elapsed_time1 = end1 - start;
 	std::chrono::duration<double> elapsed_time2 = end2 - end1;
-	cout << "Naive stack takes " <<elapsed_time1.count()*1000 << " ms" << endl;
-	cout << "Deque takes " << elapsed_time2.count()*1000 << " ms" << endl;
+	std::chrono::duration<double> elapsed_time3 = end3 - end2;
+	std::chrono::duration<double> elapsed_time4 = end4 - end3;
+	cout << "bfs deque takes " <<elapsed_time1.count()*1000 << " ms" << endl;
+	cout << "dfs deque takes " << elapsed_time2.count()*1000 << " ms" << endl;
+	cout << "bfs queue takes " << elapsed_time3.count() * 1000 << " ms" << endl;
+	cout << "dfs stack takes " << elapsed_time4.count() * 1000 << " ms" << endl;
+}
+void compareDFS() {
+	auto start = chrono::steady_clock::now();
+	dfsRecursive();
+	auto end1 = chrono::steady_clock::now();
+	dfsDeque();
+	auto end2 = chrono::steady_clock::now();
+	dfs_A();
+	isExplored();
+	auto end3 = chrono::steady_clock::now();
+	std::chrono::duration<double> elapsed_time1 = end1 - start;
+	std::chrono::duration<double> elapsed_time2 = end2 - end1;
+	std::chrono::duration<double> elapsed_time3 = end3 - end2;
+	cout << "dfs recursive takes " << elapsed_time1.count() * 1000 << " ms" << endl;
+	cout << "dfs deque takes " << elapsed_time2.count() * 1000 << " ms" << endl;
+	cout << "dfs stack takes " << elapsed_time3.count() * 1000 << " ms" << endl;
 }
 void compareBFS() {
-	clock_t t1, t2, t3;
-	t1 = clock();//get current time
+	auto start = chrono::steady_clock::now();
+	bfs_A();
+	isExplored();
+	auto end1 = chrono::steady_clock::now();
 	bfsQueue();
-	t2 = clock();
-	double dif1, dif2;
-	dif1 = difftime(t2, t1);
+	auto end2 = chrono::steady_clock::now();
 	bfsDeque();
-	t3 = clock();
-	dif2 = difftime(t3, t2);
-	cout << "Naive queue takes " << dif1 << " ms" << endl;
-	cout << "Deque takes " << dif2 << " ms" << endl;
+	
+	auto end3 = chrono::steady_clock::now();
+	std::chrono::duration<double> elapsed_time1 = end1 - start;
+	std::chrono::duration<double> elapsed_time2 = end2 - end1;
+	std::chrono::duration<double> elapsed_time3 = end3 - end2;
+	cout << "bfs_A takes " << elapsed_time1.count() * 1000 << " ms" << endl;
+	cout << "bfs queue takes " << elapsed_time2.count() * 1000 << " ms" << endl;
+	cout << "bfs deque takes " << elapsed_time3.count() * 1000 << " ms" << endl;
+}
+void compareOptimized() {
+	auto start = chrono::steady_clock::now();
+	dfsStack();
+	isExplored();
+	auto end1 = chrono::steady_clock::now();
+	dfs_B();
+	isExplored();
+	auto end2 = chrono::steady_clock::now();
+	dfs_A();
+	isExplored();
+	auto end3 = chrono::steady_clock::now();
+	std::chrono::duration<double> elapsed_time1 = end1 - start;
+	std::chrono::duration<double> elapsed_time2 = end2 - end1;
+	std::chrono::duration<double> elapsed_time3 = end3 - end2;
+	cout << "dfs stack takes " << elapsed_time1.count() * 1000 << " ms" << endl;
+	cout << "dfs B takes " << elapsed_time2.count() * 1000 << " ms" << endl;
+	cout << "dfs A takes " << elapsed_time3.count() * 1000 << " ms" << endl;
 }
 void Input_data(const string& filename) {
 	std::fstream in(filename.c_str());
@@ -692,11 +926,11 @@ void Input_data(const string& filename) {
 
 void Output_data() {
 	ofstream data("out.txt");
-	size_t m = Num_of_edges(adj);
-	for (size_t i = 0; i < m; i++)
+	size_t n = adj.size();
+	for (size_t i = 0; i < n; i++)
 	{
-		size_t n = adj[i].size();
-		for (size_t j = 0; j < n; j++)
+		size_t m = adj[i].size();
+		for (size_t j = 0; j < m; j++)
 		{
 			data << i << " " << adj[i][j] << "\n";
 		}
@@ -710,15 +944,20 @@ int main(int argc, char* argv[]) {
 
 	//Input_data("out.txt");
 
-	//srand((int)time(NULL));  // generate random seeds, use and only use once, ensure that every execuation is random
-	//generateBi(10,10);	//size_t range 18446744073709551615(2^64-1)
+	srand((int)time(NULL));  // generate random seeds, use and only use once, ensure that every execuation is random
+//	generateD(50000,50000);	//size_t range 18446744073709551615(2^64-1)
 	//Print_adj_matrix();
 	//Print_adj_list();
-	//	dfsStack();	
+		//dfsStack();	
 	//compareDFS();
-	//
-	//	isExplored();
-	//	Output_data();
-	test_directed();
+	//compareOptimized();
+	//compareBFS();
+	//isExplored();
+	//Output_data();
+//test_dense();
+	test_generation_sparse();
+	//test_sparse();
+	delete[] v;	
+	//free(&adj);
 	return 0;
 }
