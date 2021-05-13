@@ -739,7 +739,11 @@ void bfsDeque() {
 	//D.~deque<vertice>();
 }
 //file format .csv, .txt
-void test_dense() {
+void test_dense_mixed() {
+
+
+}
+void test_dense_dfs() {
 ofstream exp_data("bipartite_test.txt");// For the convenience of analyzing
 	size_t n;
 
@@ -749,26 +753,42 @@ ofstream exp_data("bipartite_test.txt");// For the convenience of analyzing
 		// Print_adj_list();
 		auto start = chrono::steady_clock::now();
 		dfs_A();
-		/*bfsDeque();*/
 		auto end1 = chrono::steady_clock::now();
-		bfs_A();
+	    dfs_B_Deque();
 		auto end2 = chrono::steady_clock::now();
-		/*bfsQueue();*/
 		dfs_B();
 		auto end3 = chrono::steady_clock::now();
 		dfsRecursive();
 		auto end4 = chrono::steady_clock::now();
-		bfs_B();
-		auto end5 = chrono::steady_clock::now();
-		bfs_B_deque();
-		auto end6 = chrono::steady_clock::now();
+	
 		std::chrono::duration<double> elapsed_time1 = end1 - start;
 		std::chrono::duration<double> elapsed_time2 = end2 - end1;
 		std::chrono::duration<double> elapsed_time3 = end3 - end2;
 		std::chrono::duration<double> elapsed_time4 = end4 - end3;
-		std::chrono::duration<double> elapsed_time5 = end5 - end4;
-		std::chrono::duration<double> elapsed_time6 = end6 - end5;
-		exp_data << adj.size() << " " << elapsed_time1.count() * 1000 << " " << elapsed_time2.count() * 1000 << " " << elapsed_time3.count() * 1000 << " " << elapsed_time4.count() * 1000 <<  elapsed_time5.count() * 1000 << " " << elapsed_time6.count() * 1000<<endl;
+		exp_data << adj.size() << " " << elapsed_time1.count() * 1000 << " " << elapsed_time2.count() * 1000 << " " << elapsed_time3.count() * 1000 << " " << elapsed_time4.count() * 1000<<endl;
+	}
+	exp_data.close();
+}
+void test_dense_bfs() {
+	ofstream exp_data("bipartite_test.txt");// For the convenience of analyzing
+	size_t n;
+
+	for (size_t i = 1; i < 200; i++) {
+		n = 200 * i;
+		generateDense(n);
+		// Print_adj_list();
+		auto start = chrono::steady_clock::now();
+		bfs_B();
+		/*bfsDeque();*/
+		auto end1 = chrono::steady_clock::now();
+		bfs_A();
+		auto end2 = chrono::steady_clock::now();
+		bfs_B_deque();
+		auto end3 = chrono::steady_clock::now();
+		std::chrono::duration<double> elapsed_time1 = end1 - start;
+		std::chrono::duration<double> elapsed_time2 = end2 - end1;
+		std::chrono::duration<double> elapsed_time3 = end3 - end2;
+		exp_data << adj.size() << " " << elapsed_time1.count() * 1000 << " " << elapsed_time2.count() * 1000 << " " << elapsed_time3.count() * 1000 << endl;
 	}
 	exp_data.close();
 }
